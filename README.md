@@ -1,6 +1,12 @@
 # crud-funcionarios
 
-Como executar o projeto
+#Detalhes
+
+O projeto foi utilizdando PHP 7 com MVC
+banco de dados Mysql
+Bootstrap 4
+
+#Como executar o projeto
 
 Configurações no arquvo Core\config
 
