@@ -12,8 +12,7 @@ if (!defined('URL')) {
  *
  * @copyright (c) year, Cesar Szpak - Celke
  */
-class StsPaginacao
-{
+class StsPaginacao {
 
     private $Link;
     private $MaxLinks;
@@ -26,34 +25,29 @@ class StsPaginacao
     private $Resultado;
     private $TotalPaginas;
 
-    function getResultado()
-    {
+    function getResultado() {
         return $this->Resultado;
     }
 
-    function getOffset()
-    {
+    function getOffset() {
         return $this->Offset;
     }
 
-    function __construct($Link)
-    {
+    function __construct($Link) {
         $this->Link = $Link;
         $this->MaxLinks = 2;
     }
 
-    public function condicao($Pagina, $LimitResultado)
-    {
+    public function condicao($Pagina, $LimitResultado) {
         $this->Pagina = (int) $Pagina ? $Pagina : 1;
         $this->LimiteResultado = (int) $LimitResultado;
         $this->Offset = ($this->Pagina * $this->LimiteResultado) - $this->LimiteResultado;
     }
 
-    public function paginacao($Query, $ParseString = null)
-    {
+    public function paginacao($Query, $ParseString = null) {
         $this->Query = (string) $Query;
         $this->ParseString = (string) $ParseString;
-        $contar = new \Sts\Models\helper\StsRead();
+        $contar = new \funcs\Models\helper\StsRead();
         $contar->fullRead($this->Query, $this->ParseString);
         $this->ResultBd = $contar->getResultado();
         if ($this->ResultBd[0]['num_result'] > $this->LimiteResultado) {
@@ -63,19 +57,16 @@ class StsPaginacao
         }
     }
 
-    private function instrucaoPaginacao()
-    {
+    private function instrucaoPaginacao() {
         $this->TotalPaginas = ceil($this->ResultBd[0]['num_result'] / $this->LimiteResultado);
-        if($this->TotalPaginas >= $this->Pagina){
+        if ($this->TotalPaginas >= $this->Pagina) {
             $this->layoutPaginacao();
-        }else{
+        } else {
             header("Location: {$this->Link}");
         }
-        
     }
 
-    private function layoutPaginacao()
-    {
+    private function layoutPaginacao() {
         $this->Resultado = "<nav aria-label='paginacao'>";
         $this->Resultado .= "<ul class='pagination justify-content-center'>";
         $this->Resultado .= "<li class='page-item'>";

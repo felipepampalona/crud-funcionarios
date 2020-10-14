@@ -1,11 +1,10 @@
 <?php
-if (isset($this->Dados['form'])) {
-    $valorForm = $this->Dados['form'];
+if (isset($this->Dados['dados_func'])) {
+    $valorForm = $this->Dados['dados_func'];
 }
-if (isset($this->Dados['form'][0])) {
-    $valorForm = $this->Dados['form'][0];
+if (isset($this->Dados['dados_func'][0])) {
+    $valorForm = $this->Dados['dados_func'][0];
 }
-//var_dump($this->Dados['select']);
 ?>
 <div class="content p-1">
     <?php
@@ -16,12 +15,16 @@ if (isset($this->Dados['form'][0])) {
     ?>
     <div class="row">
         <div class="col-md-12">
-            <h2 class="display-4 titulo">Cadastrar Funcionário</h2>
+            <h2 class="display-4 titulo">Editar Funcionário</h2>
         </div>
     </div>
     <div class="list-group-item">
         <form method="POST" action="" enctype="multipart/form-data">
-
+            <input type="hidden" name="id" value="<?php
+            if (isset($valorForm['id'])) {
+                echo $valorForm['id'];
+            }
+            ?>">
             <div class="form-row">
                 <div class="form-group col-md-4">
                     <label><span class="text-danger">*</span> Nome</label>
@@ -81,39 +84,35 @@ if (isset($this->Dados['form'][0])) {
             <div class="form-row">
                 <div class="form-group col-md-12">
                     <label><span class="text-danger">*</span> Status</label>
-                    <select name="status" id="status" class="form-control">
+                    <select name="status" id="status" class="form-control" required="">
                         <option value=''>Selecione</option>
                         <option <?php isset($valorForm['status']) == 1 ? 'selected' : '' ?> value='1'>Ativo</option>
                         <option <?php isset($valorForm['status']) == 2 ? 'selected' : '' ?> value='2'>Inativo</option>
                     </select>
                 </div>
             </div>
-
-            <div id="tels">
-                <div class="form-row">
-                    <div class="col-md-4">
-                        <label><span class="text-danger">*</span> Telefone</label>
-                        <div class="input-group">
-                            <input name="telefone[]" formato="tel" type="text" class="form-control" placeholder="(00) 00000-0000">
-                            <div class="input-group-append">
-                                <button class="btn btn-success" type="button" id="add-campo">
-                                    <i class="fa fa-plus"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="form-row">
                 <div class="form-group col-md-6">
+                    <input name="imagem_antiga" type="hidden" value="<?php
+                    if (isset($valorForm['imagem_antiga'])) {
+                        echo $valorForm['imagem_antiga'];
+                    } elseif (isset($valorForm['foto'])) {
+                        echo $valorForm['foto'];
+                    }
+                    ?>">
 
-                    <label><span class="text-danger">*</span> Foto </label>
+                    <label><span class="text-danger">*</span> Foto</label>
                     <input name="imagem_nova" type="file" onchange="previewImagem();">
                 </div>
                 <div class="form-group col-md-6">
                     <?php
-                    $imagem_antiga = URL . 'assets/imagens/pagina/preview_img.png';
+                    if (isset($valorForm['foto']) AND ! empty($valorForm['foto'])) {
+                        $imagem_antiga = URL . 'assets/imagens/funcionario/' . $valorForm['id'] . '/' . $valorForm['foto'];
+                    } elseif (isset($valorForm['imagem_antiga']) AND ! empty($valorForm['imagem_antiga'])) {
+                        $imagem_antiga = URL . 'assets/imagens/funcionario/' . $valorForm['id'] . '/' . $valorForm['imagem_antiga'];
+                    } else {
+                        $imagem_antiga = URL . 'assets/imagens/pagina/preview_img.png';
+                    }
                     ?>
                     <img src="<?php echo $imagem_antiga; ?>" alt="Imagem do slide" id="preview-user" class="img-thumbnail" style="width: 300px; height: 150px;">
                 </div>
@@ -124,6 +123,6 @@ if (isset($this->Dados['form'][0])) {
             <p>
                 <span class="text-danger">* </span>Campo obrigatório
             </p>
-            <input name="CadFunc" type="submit" class="btn btn-warning" value="Salvar">
+            <input name="EditFunc" type="submit" class="btn btn-warning" value="Salvar">
         </form>
     </div>

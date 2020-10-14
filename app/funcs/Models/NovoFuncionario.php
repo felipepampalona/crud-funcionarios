@@ -12,8 +12,7 @@ if (!defined('URL')) {
  *
  * @copyright (c) year, Luiz Felipe
  */
-class NovoFuncionario
-{
+class NovoFuncionario {
 
     private $Resultado;
     private $Dados;
@@ -21,13 +20,11 @@ class NovoFuncionario
     private $Foto;
     private $DadosCPF;
 
-    function getResultado()
-    {
+    function getResultado() {
         return $this->Resultado;
     }
 
-    public function verUsuario($DadosId)
-    {
+    public function verUsuario($DadosId) {
         $this->DadosId = (int) $DadosId;
         $verPerfil = new \funcs\Models\helper\StsRead();
         $verPerfil->fullRead("SELECT * FROM `funcionario` WHERE `id`=:id LIMIT :limit", "id=" . $this->DadosId . "&limit=1");
@@ -35,8 +32,7 @@ class NovoFuncionario
         return $this->Resultado;
     }
 
-    public function cadUsuario(array $Dados)
-    {
+    public function cadUsuario(array $Dados) {
         $this->Dados = $Dados;
         //var_dump($this->Dados);
         $this->Foto = $this->Dados['imagem_nova'];
@@ -52,8 +48,7 @@ class NovoFuncionario
         }
     }
 
-    private function valCampos()
-    {
+    private function valCampos() {
         $valEmail = new \funcs\Models\helper\Email();
         $valEmail->valEmail($this->Dados['email']);
 
@@ -67,8 +62,7 @@ class NovoFuncionario
         }
     }
 
-    private function inserirFunc()
-    {
+    private function inserirFunc() {
         $this->Dados['created'] = date("Y-m-d H:i:s");
         $slugImg = new \funcs\Models\helper\Slug();
         $this->Dados['foto'] = $slugImg->nomeSlug($this->Foto['name']);
@@ -89,8 +83,7 @@ class NovoFuncionario
         }
     }
 
-    private function valFoto()
-    {
+    private function valFoto() {
         $uploadImg = new \funcs\Models\helper\AdmsUploadImgRed();
         $uploadImg->uploadImagem($this->Foto, 'assets/imagens/funcionario/' . $this->Dados['id'] . '/', $this->Dados['foto'], 150, 150);
         if ($uploadImg->getResultado()) {
@@ -101,27 +94,40 @@ class NovoFuncionario
             $this->Resultado = false;
         }
     }
-    private function verCpf($DadosCPF)
-    {
-        $this->DadosCPF =  $DadosCPF;
+
+    private function verCpf($DadosCPF) {
+        $this->DadosCPF = $DadosCPF;
         $verPerfil = new \funcs\Models\helper\StsRead();
         $verPerfil->fullRead("SELECT id FROM `funcionario` WHERE `cpf`=:cpf LIMIT :limit", "cpf=" . $this->DadosCPF . "&limit=1");
         $this->Resultado = $verPerfil->getResultado();
         return $this->Resultado[0]['id'];
     }
 
-    public function cadTelefone($Dados, $DadosCPF)
-    {
-        $this->Dados =  $Dados;
-        $this->DadosCPF =  $DadosCPF;
-        $inf =$this->verCpf($this->DadosCPF);
+    public function cadTelefone($Dados, $DadosCPF) {
+        $this->Dados = $Dados;
+        $this->DadosCPF = $DadosCPF;
+        $inf = $this->verCpf($this->DadosCPF);
         $this->Dados['funcionario_id'] = $inf;
 
         $cadFuncs = new \funcs\Models\helper\StsCreate;
         $cadFuncs->exeCreate("telefone_funcionarios", $this->Dados);
         if ($cadFuncs->getResultado()) {
             $this->Resultado = true;
-        }else{
+        } else {
+            $this->Resultado = false;
+        }
+    }
+
+    public function cadTelefoneId($Dados) {
+        $this->Dados = $Dados;
+
+        $cadFuncs = new \funcs\Models\helper\StsCreate;
+        $cadFuncs->exeCreate("telefone_funcionarios", $this->Dados);
+        if ($cadFuncs->getResultado()) {
+            $this->Resultado = true;
+            $UrlDestino = URL . 'view-funcionario/' . $this->Dados['funcionario_id'];
+            header("Location: $UrlDestino");
+        } else {
             $this->Resultado = false;
         }
     }
