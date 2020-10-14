@@ -58,10 +58,10 @@ class EditFuncionario {
             $this->updateEditFuncionario();
         } else {
             $slugImg = new \funcs\Models\helper\Slug();
-            $this->Dados['imagem'] = $slugImg->nomeSlug($this->Foto['name']);
+            $this->Dados['foto'] = $slugImg->nomeSlug($this->Foto['name']);
 
             $uploadImg = new \funcs\Models\helper\AdmsUploadImgRed();
-            $uploadImg->uploadImagem($this->Foto, 'assets/imagens/funcionario/' . $this->Dados['id'] . '/', $this->Dados['imagem'], 150, 150);
+            $uploadImg->uploadImagem($this->Foto, 'assets/imagens/funcionario/' . $this->Dados['id'] . '/', $this->Dados['foto'], 150, 150);
             if ($uploadImg->getResultado()) {
                 $apagarImg = new \funcs\Models\helper\ApagarImg();
                 $apagarImg->apagarImg('assets/imagens/funcionario/' . $this->Dados['id'] . '/' . $this->ImgAntiga);
